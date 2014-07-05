@@ -26,19 +26,12 @@ In the above example, these would be valid:
 
 ## Plugin behavior
 
-    use NoccyLabs\VirtFs\VirtFs;
-    
-    $virtfs = new VirtFs("plugin");
+To load plugins from individual .zip-archives, or directly from one or more
+plugin directories, see [examples/autoloading/](examples/autoloading/). These
+examples also demonstrates the autoloader
 
-    function loadPluginFromZip($virtfs, $zip) {
-        // assume plugin config at pluginname/plugin.json and name pluginname.zip
-        $plugin_info = basename($zip, ".zip")."/plugin.json";
-        $virtfs->addArchive($zip, basename($zip, ".zip")."/");
-        // file is now readable
-        echo file_get_contents("plugin://{$plugin_info}");
-    }
 
-## Autoloader
+### Autoloader
     
 To be able to autoload classes from a VirtFs filesystem, use the `VirtFsLoader`
 class:
@@ -46,4 +39,4 @@ class:
     use NoccyLabs\VirtFs\VirtFsLoader;
     
     $loader = new VirtFsLoader($virtfs);
-    
+    $loader->register

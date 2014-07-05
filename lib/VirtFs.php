@@ -31,6 +31,8 @@ class VirtFs
     protected $stream;
     
     protected static $handlers = array();
+    
+    protected $loaders = array();
 
     public function __construct($proto=null)
     {
@@ -46,6 +48,21 @@ class VirtFs
         if ($this->protocol) {
             $this->unregisterStreamWrapper();
         }
+    }
+    
+    public function addAutoloader($namespace, $path=null, $psr4=false)
+    {
+        $loader = new VirtFsLoader($this);
+        $loader->register($namespace, $path, $psr4);
+        $this->pushLoader($loader);
+    }
+    
+    public function pushLoader(VirtFsLoader $loader)
+    {
+        if (!in_array($loader,$this->loaders)) {
+            $this->loaders[] = $loader;
+        }
+        return $this;
     }
     
     public function registerStreamWrapper()

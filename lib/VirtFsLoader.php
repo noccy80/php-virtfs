@@ -25,16 +25,11 @@ class VirtFsLoader
     
     protected $virt_fs;
     
-    protected $load_ns;
+    protected $load_ns = array();
     
-    protected $load_psr4;
-    
-    protected $load_path;
-
-    public function __construct(VirtFs $virt_fs, $path = null)
+    public function __construct(VirtFs $virt_fs)
     {
         $this->virt_fs = $virt_fs;
-        $this->load_path = $path;
     }
     
     /**
@@ -44,10 +39,12 @@ class VirtFsLoader
      * @param string The namespace to register
      * @param bool Register a PSR-4 instead of PSR-0 autoloader
      */
-    public function register($namespace=null, $psr4=false)
+    public function register($namespace=null, $path = null, $psr4=false)
     {
-        $this->load_ns = $namespace;
-        $this->load_psr4 = $psr4;
+        $this->load_ns[$namespace] = array($path, $psr4);
+        if ($this->registered) { 
+            return;
+        }
         spl_autoload_register(array($this,"spl_autoload_callback"));
         $this->registered = true;
     }
@@ -60,20 +57,24 @@ class VirtFsLoader
     
     public function spl_autoload_callback($class)
     {
-        if (strncmp($class, $this->load_ns, strlen($this->load_ns)) === 0) {
-            if ($this->load_psr4) {
-                $class = substr($class, strlen($this->load_ns));
-            }
-            if ($this->load_path) {
-                $this->load_path = trim($this->load_path,"/")."/";
-            }
-            //printf("load_path=%s\n", $this->load_path);
-            $classfile = $this->load_path.strtr($class,"\\","/").".php";
-            
-            //printf("class=%s classfile=%s\n", $class, $classfile);
-            if ($this->virt_fs->has($classfile)) {
-                $file = $this->virt_fs->getPath($classfile);
-                require_once $file;
+        foreach($this->load_ns as $load_ns => $_info) {
+            list($load_path, $load_psr4) = $_info;
+        
+            if (strncmp($class, $load_ns, strlen($load_ns)) === 0) {
+                if ($load_psr4) {
+                    $class = substr($class, strlen($load_ns));
+                }
+                if ($load_path) {
+                    $load_path = trim($load_path,"/")."/";
+                }
+                //printf("load_path=%s\n", $this->load_path);
+                $classfile = $load_path.strtr($class,"\\","/").".php";
+                
+                //printf("class=%s classfile=%s\n", $class, $classfile);
+                if ($this->virt_fs->has($classfile)) {
+                    $file = $this->virt_fs->getPath($classfile);
+                    require_once $file;
+                }
             }
         }
     }

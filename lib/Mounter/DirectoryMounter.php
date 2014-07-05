@@ -31,7 +31,7 @@ class DirectoryMounter implements MounterInterface
 
     public function __construct($path, $mountpoint)
     {
-        $this->path = $path;
+        $this->path = "/".trim($path,"/")."/";
         $this->mountpoint = "/".trim($mountpoint,"/");
     }
 

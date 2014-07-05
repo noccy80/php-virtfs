@@ -1,6 +1,6 @@
 {
     "name": "noccylabs/virtfs",
-    "description": "Virtual filesystems (like physfs)",
+    "description": "Virtual filesystems (like physfs) - with autoloading!",
     "license": "GPL-3.0",
     "authors": [
         {
@@ -10,9 +10,17 @@
     ],
     "require": {
     },
+    "keywords": [
+        "autoload", "physfs", "virtual filesystem"
+    ],
     "autoload": {
         "psr-4": {
             "NoccyLabs\\VirtFs\\": "lib/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master":"0.1.x-dev"
         }
     }
 }
