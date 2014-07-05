@@ -39,12 +39,14 @@ class ArchiveMounter implements MounterInterface
         $this->archive = $path;
         $this->zip = new \ZipArchive();
         $this->zip->open($path);
-        $this->mountpoint = $mountpoint;
+        $this->mountpoint = "/".trim($mountpoint,"/");
     }
 
     public function has($file)
     {
-        $stat = $this->zip->statName($file);
+        //printf("node has? file=%s zip=%s mount=%s\n", $file, $this->archive, $this->mountpoint);
+        $stat = $this->zip->statName(trim($file,"/"));
+        //printf("ret=%d\n", $stat);
         return (!!$stat);
     }
 

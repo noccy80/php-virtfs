@@ -28,10 +28,13 @@ class VirtFsLoader
     protected $load_ns;
     
     protected $load_psr4;
+    
+    protected $load_path;
 
-    public function __construct(VirtFs $virt_fs)
+    public function __construct(VirtFs $virt_fs, $path = null)
     {
         $this->virt_fs = $virt_fs;
+        $this->load_path = $path;
     }
     
     /**
@@ -61,7 +64,13 @@ class VirtFsLoader
             if ($this->load_psr4) {
                 $class = substr($class, strlen($this->load_ns));
             }
-            $classfile = strtr($class,"\\","/").".php";
+            if ($this->load_path) {
+                $this->load_path = trim($this->load_path,"/")."/";
+            }
+            //printf("load_path=%s\n", $this->load_path);
+            $classfile = $this->load_path.strtr($class,"\\","/").".php";
+            
+            //printf("class=%s classfile=%s\n", $class, $classfile);
             if ($this->virt_fs->has($classfile)) {
                 $file = $this->virt_fs->getPath($classfile);
                 require_once $file;

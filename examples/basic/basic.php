@@ -1,21 +1,8 @@
 <?php
 
-require_once __DIR__."/../vendor/autoload.php";
+require_once __DIR__."/../../vendor/autoload.php";
 
 use NoccyLabs\VirtFs\VirtFs;
-use NoccyLabs\VirtFs\VirtFsLoader;
-
-$vfs_plugins = new VirtFs("plugin");
-$vfs_plugins
-    ->addArchive(__DIR__."/foovendor.zip");
-    
-// Register autoloader
-$plugins_loader = new VirtFsLoader($vfs_plugins);
-$plugins_loader->register();
-
-// Autoloaded from zip
-$foo = new FooVendor\FooClass();
-var_dump($foo);
 
 $vfs_data = new VirtFs("appdata");
 $vfs_data

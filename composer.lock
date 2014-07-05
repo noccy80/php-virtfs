@@ -1,0 +1,52 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "cc2ca0121f057779685678e9feea073d",
+    "packages": [
+        {
+            "name": "noccylabs/protostream",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "http://satis.noccylabs.info/packages/php-protostream.git",
+                "reference": "a68276030bb9ed944ae6348a31a04ce7cd066122"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ProtoStream\\": "src/"
+                }
+            },
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Christopher Vagnetoft",
+                    "email": "cvagnetoft@gmail.com"
+                }
+            ],
+            "description": "Map protocols to file system streams",
+            "time": "2014-02-27 02:56:08"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "noccylabs/protostream": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

@@ -32,7 +32,7 @@ class DirectoryMounter implements MounterInterface
     public function __construct($path, $mountpoint)
     {
         $this->path = $path;
-        $this->mountpoint = $mountpoint;
+        $this->mountpoint = "/".trim($mountpoint,"/");
     }
 
     public function has($file)

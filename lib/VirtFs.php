@@ -97,6 +97,7 @@ class VirtFs
             $mount = $node->getMountPoint();
             if (strncmp($mount, $file, strlen($mount)) === 0) {
                 $nodefile = substr($file, strlen($mount));
+                //printf("nodefile=%s mount=%s file=%s\n", $nodefile, $mount, $file);
                 if ($node->has($nodefile)) {
                     return $node->getPath($nodefile);
                 }
@@ -130,6 +131,11 @@ class VirtFs
         $handler = self::$handlers[$proto];
         $mapped_file = $handler->getPath($path);
         return @stat($mapped_file);
+    }
+
+    public function stream_stat()
+    {
+        return @stat($this->stream);
     }
 
     public function stream_open($file, $mode, $options, &$opened_path)
