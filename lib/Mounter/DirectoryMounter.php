@@ -69,6 +69,11 @@ class DirectoryMounter implements MounterInterface
     {
         return $this->writable;
     }
+    
+    public function glob($pattern)
+    {
+        return glob($this->path.$pattern.'*');
+    }
 
 }
 

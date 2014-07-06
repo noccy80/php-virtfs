@@ -77,6 +77,15 @@ class ArchiveMounter implements MounterInterface
     {
         return false;
     }
+    
+    public function glob($pattern)
+    {
+        foreach($this->zip as $file=>$info) {
+            var_dump($file);
+            var_dump($info);
+            echo "----\n";
+        }
+    }
 
 }
 

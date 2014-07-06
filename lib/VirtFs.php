@@ -142,6 +142,24 @@ class VirtFs
         return false;
     }
     
+    public function glob($path)
+    {
+        $path = "/".ltrim($path,"/");
+        $ret = array();
+        foreach($this->nodes as $node) {
+            $mount = $node->getMountPoint();
+            if (fnmatch($path.'*', $mount) && (strlen($mount)>1)) {
+                $ret[] = $mount;
+            }
+            if (strncmp($mount, $path, strlen($mount)) === 0) {
+                $restpath = substr($path,strlen($mount));
+                $glob = $node->glob($restpath);
+                $ret = array_merge($ret, $glob);
+            } 
+        }
+        return $ret;
+    }
+    
     public function url_stat($file)
     {
         list($proto,$path) = explode("://", $file);
