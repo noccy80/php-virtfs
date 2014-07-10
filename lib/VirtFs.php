@@ -183,7 +183,7 @@ class VirtFs
         $mapped_file = $handler->getPath($path);
         // check so that we can really write to the file
         if ((!$handler->isWritable($path)) && (strpos($mode,"r")===false)) {
-            error_log("Error: Resource {$file} is not writable");
+            //error_log("Error: Resource {$file} is not writable");
             return false;
         }
         
@@ -194,7 +194,7 @@ class VirtFs
             return true;
         }
         
-        error_log("Error: Could not open {$file} with modes {$mode}");
+        //error_log("Error: Could not open {$file} with modes {$mode}");
         return false;
     }
     
