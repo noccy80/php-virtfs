@@ -56,6 +56,29 @@ class VirtFsTest extends \PhpUnit_Framework_TestCase
         $this->assertEquals($archive_expect, $archive_read);
     }
     
+    public function testReadingStreamsFromWrapper()
+    {
+        $this->vfs->registerStreamWrapper("vfstest");
+        
+        $this->vfs->addDirectory( __DIR__."/../static" );
+        $this->vfs->addArchive( __DIR__."/../static/archive.zip" );
+
+        $static_expect = "static-file\n";
+        $static_file = fopen("vfstest://static-file.txt", "r");
+        $static_read = stream_get_contents($static_file);
+        $this->assertEquals(strlen($static_read), ftell($static_file));
+        fclose($static_file);
+        
+        $archive_expect = "archived-file\n";
+        $archive_file = fopen("vfstest://archived-file.txt", "r");
+        $archive_read = stream_get_contents($archive_file);
+        $this->assertEquals(strlen($archive_read), ftell($archive_file));
+        fclose($archive_file);
+        
+        $this->assertEquals($static_expect, $static_read);
+        $this->assertEquals($archive_expect, $archive_read);
+    }
+    
     public function testWritingToWrapper()
     {
         $this->vfs->registerStreamWrapper("vfstest");

@@ -328,6 +328,6 @@ class VirtFs
 
     public function stream_seek($offset, $whence)
     {
-        return fseek($this->stream, $offset, $whence);
+        fseek($this->stream, $offset, $whence);
     }
 }
