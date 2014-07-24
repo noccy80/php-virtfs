@@ -25,3 +25,7 @@ $f2 = fopen("appdata://bar.txt", "w");
 fwrite($f2, "herro!\n");
 fclose($f2);
 
+$list = $vfs_data->getDirectoryListing();
+foreach($list as $item) {
+    echo $item."\n";
+}

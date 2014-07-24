@@ -59,7 +59,6 @@ class VirtFsLoader
     {
         foreach($this->load_ns as $load_ns => $_info) {
             list($load_path, $load_psr4) = $_info;
-        
             if (strncmp($class, $load_ns, strlen($load_ns)) === 0) {
                 if ($load_psr4) {
                     $class = substr($class, strlen($load_ns));

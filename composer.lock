@@ -4,24 +4,25 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cc2ca0121f057779685678e9feea073d",
+    "hash": "e3348099bac86dee9bf7fab276693437",
     "packages": [
         {
-            "name": "noccylabs/protostream",
-            "version": "dev-master",
+            "name": "noccylabs/filesysteminterface",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
-                "url": "http://satis.noccylabs.info/packages/php-protostream.git",
-                "reference": "a68276030bb9ed944ae6348a31a04ce7cd066122"
+                "url": "http://satis.noccylabs.info/packages/php-filesysteminterface.git",
+                "reference": "59169503a22a3578355888d85c42e5303bfa071c"
+            },
+            "dist": {
+                "type": "tar",
+                "url": "http://satis.noccylabs.info/dist/noccylabs-filesysteminterface-0.1.0-ab33a1.tar",
+                "reference": "59169503a22a3578355888d85c42e5303bfa071c",
+                "shasum": "67598c2c03ddd8c2fb162835404ea838a3b9dd2b"
             },
             "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "ProtoStream\\": "src/"
-                }
-            },
             "license": [
-                "GPL-2.0+"
+                "GPL-3.0"
             ],
             "authors": [
                 {
@@ -29,8 +30,8 @@
                     "email": "cvagnetoft@gmail.com"
                 }
             ],
-            "description": "Map protocols to file system streams",
-            "time": "2014-02-27 02:56:08"
+            "description": "Interface for classes interacting with filesystems",
+            "time": "2014-07-16 00:16:00"
         }
     ],
     "packages-dev": [
@@ -40,9 +41,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "noccylabs/protostream": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": [
 
     ],

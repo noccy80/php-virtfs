@@ -34,6 +34,7 @@ interface MounterInterface
     public function setIsWritable($is_writable);
     
     public function getIsWritable();
-    
+ 
+    public function getDirectoryListing($path='/');
 }
 

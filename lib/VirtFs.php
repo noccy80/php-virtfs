@@ -19,6 +19,10 @@
 
 namespace NoccyLabs\VirtFs;
 
+/**
+ * Virtual filesystem with optional stream protocol/wrapper.
+ * 
+ */
 class VirtFs
 {
     /** @var string The protocol bound (f.ex. 'data' for 'data://..') */
@@ -34,11 +38,17 @@ class VirtFs
     
     protected $loaders = array();
 
+    protected $registered_wrapper = false;
+    
+    /**
+     * Constructor, optionally registers the wrapper protocol.
+     * 
+     * @param string The protocol to register
+     */
     public function __construct($proto=null)
     {
         if ($proto) {
             $this->protocol = $proto;
-            self::$handlers[$proto] = $this;
             $this->registerStreamWrapper();
         }
     }
@@ -50,6 +60,13 @@ class VirtFs
         }
     }
     
+    /**
+     * Register an autoloader for the virtual filesystem
+     * 
+     * @param string The namespace to register
+     * @param string The root of the autoloader
+     * @param bool If true, use a psr-4 autoloader, otherwise a psr-0.
+     */
     public function addAutoloader($namespace, $path=null, $psr4=false)
     {
         $loader = new VirtFsLoader($this);
@@ -57,6 +74,12 @@ class VirtFs
         $this->pushLoader($loader);
     }
     
+    /**
+     * Push a VirtFsLoader onto the stack of autoloaders for the virtual filesystem.
+     * 
+     * @param \NoccyLabs\VirtFs\VirtFsLoader The loader to register
+     * @return \NoccyLabs\VirtFs\VirtFs
+     */
     public function pushLoader(VirtFsLoader $loader)
     {
         if (!in_array($loader,$this->loaders)) {
@@ -65,16 +88,51 @@ class VirtFs
         return $this;
     }
     
-    public function registerStreamWrapper()
+    /**
+     * Register a protocol as a stream wrapper.
+     * 
+     * This makes access possible with the regular file i/o functions using
+     * a path such as "protocol://file.txt".
+     * 
+     * @param string The protocol to register
+     * @return bool
+     * @throws \RuntimeException
+     */
+    public function registerStreamWrapper($protocol=null)
     {
+        if ($this->registered_wrapper) {
+            throw new \RuntimeException("Unregister the wrapper before registering it again!");
+        }
+        if ($protocol && !$this->protocol) {
+            $this->protocol = $protocol; 
+        }
+        $this->registered_wrapper = true;
+        self::$handlers[$this->protocol] = $this;
         return stream_wrapper_register($this->protocol, __CLASS__, 0);
     }
 
+    /**
+     * Unregister a registered protocol stream wrapper.
+     * 
+     * @return bool
+     */
     public function unregisterStreamWrapper()
     {
-        return stream_wrapper_unregister($this->protocol);
+        if ($this->registered_wrapper) {
+            $this->registered_wrapper = false;
+            return stream_wrapper_unregister($this->protocol);
+        }
     }
 
+    /**
+     * Add a directory to the virtual filesystem.
+     * 
+     * @param string The directory to mount
+     * @param string The mountpoint in the virtual filesystem
+     * @param bool If true, the directory will be considered a candidate for writing operations.
+     * @param int Priority of this location when matching paths
+     * @return \NoccyLabs\VirtFs\VirtFs
+     */
     public function addDirectory($path, $mountpoint='/', $writable=false, $priority=0) {
         $mounter = new Mounter\DirectoryMounter($path, $mountpoint);
         $mounter->setPriority($priority);
@@ -83,13 +141,51 @@ class VirtFs
         return $this;
     }
     
+    /**
+     * Add an archive to the virtual filesystem
+     * 
+     * @param string The path to the archive to mount
+     * @param string The mountpoint in the virtual filesystem
+     * @param int Priority of this location when matching paths
+     * @return \NoccyLabs\VirtFs\VirtFs
+     */
     public function addArchive($path, $mountpoint='/', $priority=0) {
         $mounter = new Mounter\ArchiveMounter($path, $mountpoint);
         $mounter->setPriority($priority);
         $this->nodes[] = $mounter;
         return $this;
     }
+    
+    /**
+     * Get a directory listing from the virtual filesystem.
+     * 
+     * @param string The path to get the listing of
+     * @return type
+     */
+    public function getDirectoryListing($path='/')
+    {
+        // 1. find out what is mounted on this path
+        $listing = array();
+        foreach($this->nodes as $node) {
+            $mp = $node->getMountPoint();
+            if ((dirname($mp) == $path) && ($path != '/')) {
+                $listing[] = basename($mp)."/";
+            }
+            if (strncmp($path, $mp, strlen($mp)) === 0) {
+                $listing = array_merge($listing, $node->getDirectoryListing($path));
+            }
+        }
+        
+        return $listing;
+    }
 
+    /**
+     * Check if a file exists
+     * 
+     * @todo Rename to exists()
+     * @param string The filename to check the existance of
+     * @return boolean
+     */
     public function has($file)
     {
         $file = "/".ltrim($file,"/");
@@ -105,6 +201,12 @@ class VirtFs
         return false;
     }
     
+    /**
+     * Get the canonical path to a file in the virtual filesystem.
+     * 
+     * @param string The file to get the path of
+     * @return string The full path or URI to the file
+     */
     public function getPath($file)
     {
         $file = "/".ltrim($file,"/");
@@ -130,6 +232,7 @@ class VirtFs
 
     }
 
+    
     public function isWritable($file)
     {
         $file = "/".ltrim($file,"/");

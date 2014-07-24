@@ -74,6 +74,22 @@ class DirectoryMounter implements MounterInterface
     {
         return glob($this->path.$pattern.'*');
     }
+    
+    public function getDirectoryListing($path='/')
+    {
+        // get pretty mountpoint and find resulting path
+        $mp = rtrim($this->getMountPoint(), DIRECTORY_SEPARATOR)?:DIRECTORY_SEPARATOR;
+        $rp = rtrim($this->path.substr($path, strlen($mp)), DIRECTORY_SEPARATOR);
+        $gp = $rp."/*";
+        $glob = glob($gp);
+        $globo = array();
+
+        foreach($glob as $item) {
+            if (is_dir($item)) { $item.='/'; }
+            $globo[] = ltrim(str_replace($rp, "", $item),'/');
+        }
+        return $globo;
+    }
 
 }
 

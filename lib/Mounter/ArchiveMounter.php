@@ -87,5 +87,24 @@ class ArchiveMounter implements MounterInterface
         }
     }
 
+    public function getDirectoryListing($path='/')
+    {
+        // get pretty mountpoint and find resulting path
+        $mp = rtrim($this->getMountPoint(), DIRECTORY_SEPARATOR);
+        $rp = rtrim(substr($path, strlen($mp)), DIRECTORY_SEPARATOR);
+        $gp = $rp."/*";
+ 
+        $gp = ltrim($gp,"/");
+        $glob = array();
+        for ($i = 0; $i < $this->zip->numFiles; $i++) {
+            $filename = $this->zip->getNameIndex($i);
+            if (fnmatch($gp, $filename)) {
+                $glob[] = basename($filename);
+            }
+        }
+ 
+        return $glob;
+    }
+        
 }
 

@@ -9,6 +9,8 @@
         }
     ],
     "require": {
+        "PHP": ">=2.4",
+        "noccylabs/filesysteminterface": "0.1.*"
     },
     "keywords": [
         "autoload", "physfs", "virtual filesystem"
