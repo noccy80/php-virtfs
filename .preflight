@@ -1,0 +1,3 @@
+!logfile build/preflight.log
+phpunit --testdox-text build/tests.log --coverage-html build/coverage
+apigen --source lib --destination build/reference
