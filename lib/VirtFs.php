@@ -47,6 +47,7 @@ class VirtFs
      */
     public function __construct($proto=null)
     {
+        $this->nodes = array();
         if ($proto) {
             $this->protocol = $proto;
             $this->registerStreamWrapper();
